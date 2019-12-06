@@ -12,6 +12,8 @@ outer.get('/data',async(ctx,next)=>{
      }
      await next()
 })
+
+
 router.post('/login',async(ctx,next)=>{
      ctx.status = 200
      let postData = ctx.request.body
