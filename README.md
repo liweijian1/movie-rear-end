@@ -1,5 +1,7 @@
 # movie-rear-end
 1.koa-router使用async问题，必须要让所有请求都使用async/await,才会生效
+
+
 outer.get('/data',async(ctx,next)=>{
      ctx.status = 200
      ceshiData = await MovieData.firstPageData()
