@@ -14,61 +14,55 @@ const Schma = new mongoose.Schema({
 })
 
 const firstmovie = mongoose.model('FirstMovie',Schma)
-let firstMovie = ''
+
+let firstPageInfor = {
+    movieTitle:[],
+    movieType:[],
+}
+
 
 module.exports = function firstPageData(){
     return new Promise((resolve,reject)=>{
+        let firstMovie = ''
         request
         .get('https://www.meiju33.com/')
          .on('data',data=>{
           firstMovie += data
-      
       })
        .on('end',()=>{
-           let data = []
-           let movieTitle = []
-          let $ = cheerio.load(firstMovie.toString())                                                                                                                                                         
-          $('.col-md-6 a .title').each((index,element)=>{
-              data.push(element)
+          let $ = []
+          let moviedata = []
+        //   let movietype = []
+        firstPageInfor.movieTitle = []
+        firstPageInfor.movieType = []
+          $ = cheerio.load(firstMovie.toString())                                                                                                                                                      
+          $('.col-lg-7.col-md-6.col-sm-12 a').each((index,element)=>{
+            moviedata.push(element.attribs)
           })
-          data.forEach((item,index)=>{
-              if(item.children[0].data !== undefined && item.children[0].data !== ''){
-                 //movieTitle.push(item.parent.attribs.href)
-                  movieTitle.push({
-                      url:`${item.parent.attribs.href}`,
-                      title:`${item.parent.attribs.title}`
+          moviedata.forEach((item,index)=>{
+              if(item.title !== undefined && item.title !== ''){
+                firstPageInfor.movieTitle.push({
+                      sid:index,
+                      url:`${item.href}`,
+                      title:`${item.title}`,
+                      style:`${item.style}`
                   }) 
                  }
          })
-         firstmovie.find({},(err,data)=>{
-              if(err){
-                  console.log(err)
-              }else{
-                  let title = []
-                  data.forEach(item => {
-                      title.push(item.title)
-                  })
-                  movieTitle.forEach(item => {
-                      if(!title.includes(item.title)){
-                         firstmovie.create(item)
-                      }
-                  })
-              }
-         })
-         firstmovie.find({},(err,data)=>{
-             if(err){
-                 reject(err)
-             }
-             else{
-                 resolve(data)
-             }
-         })
-          // let writeStream = fs.createWriteStream('out.txt')
-          // writeStream.write(movieTitle.toString(),'utf-8')
-          // writeStream.end()
-          // writeStream.on('finish',()=>{
-          //     console.log('结束')
-          // })
+         $('.hy-index-tags.active.hidden-md.clearfix a').each((index,element) => {
+            firstPageInfor.movieType.push(element.children[0].data)
+         })   
+         resolve(firstPageInfor) 
+         
+        //   let writeStream = fs.createWriteStream('movie.html')
+        //   writeStream.write(firstMovie.toString(),'utf-8')
+        //   writeStream.end()
+        //   writeStream.on('finish',()=>{
+        //       console.log('结束')
+        //   })
+       })
+       .on('err',(err)=>{
+           reject(err)
        })
     })
 }

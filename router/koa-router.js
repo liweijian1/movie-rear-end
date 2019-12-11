@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const MovieData = require('../american/main')
 const usreData = require('../user/user')
 const registUser = require('../user/registerUser')
+const firstPageData = require('../american/firstPage')
 
 const router = new Router()
 
@@ -29,7 +30,8 @@ router.get('/data',async(ctx,next)=>{
 router.post('/login',async(ctx,next)=>{
      ctx.status = 200
      let postData = ctx.request.body
-     let data = await usreData(postData)
+     let data = []
+     data = await usreData(postData)
      if(data.length === 0){
        ctx.body = {
          code:200,
@@ -65,6 +67,25 @@ router.post('/register',async(ctx,next)=> {
         }
         await next()
 })
+  router.get('/swiper',async(ctx,next)=>{
+     ctx.status = 200
+     let data = {}
+     data = await firstPageData()
+     console.log(data)
+     ctx.body = {
+        code:200,
+        success:true,
+        data:data
+      }
+     await next()
+  })
+  // router.get('./hotData',async(ctx,next)=>{
+  //        ctx.status = 200
+
+  //        await next()
+         
+  // })
+
 
 
 
