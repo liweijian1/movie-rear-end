@@ -4,20 +4,22 @@ const request = require('request')
 const cheerio = require('cheerio')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://127.0.0.1:27017/db',{useNewUrlParser: true,useUnifiedTopology:true})
-mongoose.connection.on('err',()=>{
-    console.log('连接数据库失败')
-})
+// mongoose.connect('mongodb://127.0.0.1:27017/db',{useNewUrlParser: true,useUnifiedTopology:true})
+// mongoose.connection.on('err',()=>{
+//     console.log('连接数据库失败')
+// })
 const Schma = new mongoose.Schema({
    url:'',
    title:''
 })
 
-const firstmovie = mongoose.model('FirstMovie',Schma)
+//const firstmovie = mongoose.model('FirstMovie',Schma)
 
 let firstPageInfor = {
     movieTitle:[],
     movieType:[],
+    hotMovie:[],
+    recentMovie:[]
 }
 
 
@@ -51,7 +53,10 @@ module.exports = function firstPageData(){
          })
          $('.hy-index-tags.active.hidden-md.clearfix a').each((index,element) => {
             firstPageInfor.movieType.push(element.children[0].data)
-         })   
+         })
+         $('.col-md-2.col-sm-3.col-xs-4 a').each((index,element)=>{
+            console.log(element)
+         }) 
          resolve(firstPageInfor) 
          
         //   let writeStream = fs.createWriteStream('movie.html')

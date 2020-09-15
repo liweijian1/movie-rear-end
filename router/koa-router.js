@@ -9,14 +9,13 @@ const router = new Router()
 let ceshiData = []
 
 
-
 //koa原生cors跨域
-router.all('*',async(ctx,next) => {
-  ctx.set('Access-Control-Allow-Origin','*')
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-  ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-  await next()
-})
+// router.all('*',async(ctx,next) => {
+//   ctx.set('Access-Control-Allow-Origin','*')
+//   ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+//   ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+//   await next()
+// })
 router.get('/data',async(ctx,next)=>{
      ctx.status = 200
      ceshiData = await MovieData.firstPageData()
@@ -30,16 +29,16 @@ router.get('/data',async(ctx,next)=>{
 router.post('/login',async(ctx,next)=>{
      ctx.status = 200
      let postData = ctx.request.body
-     let data = []
-     data = await usreData(postData)
-     if(data.length === 0){
+     //let data = []
+     let data = await usreData(postData)
+     if(Array.isArray(data)&&data.length === 0){
        ctx.body = {
          code:200,
          success:false,
          data:[]
        }
      }
-     else{
+     else if(Array.isArray(data)&&data.length !== 0){
        ctx.body = {
         code:200,
         success:true,
@@ -71,7 +70,6 @@ router.post('/register',async(ctx,next)=> {
      ctx.status = 200
      let data = {}
      data = await firstPageData()
-     console.log(data)
      ctx.body = {
         code:200,
         success:true,
@@ -81,10 +79,15 @@ router.post('/register',async(ctx,next)=> {
   })
   // router.get('./hotData',async(ctx,next)=>{
   //        ctx.status = 200
-
+  //        ctx.body = {}
   //        await next()
          
   // })
+  router.get('/recentMovie',async(ctx,next)=>{
+       ctx.status = 200
+       ctx.body = 'ok'
+       await next()
+  })
 
 
 
